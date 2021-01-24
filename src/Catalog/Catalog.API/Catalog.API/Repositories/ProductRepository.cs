@@ -2,7 +2,6 @@
 using Catalog.API.Entities;
 using Catalog.API.Repositories.interfaces;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -44,15 +43,14 @@ namespace Catalog.API.Repositories
 
         public async Task<bool> Delete(string id)
         {
-            var filterBuilder = Builders<Product>.Filter.Eq(product => product.Id, "Id");
-
-            var x = await _context.Products.DeleteOneAsync(x => x.Id == id);
-            return x.IsAcknowledged;
+            var removed = await _context.Products.DeleteOneAsync(x => x.Id == id);
+            return removed.IsAcknowledged && removed.DeletedCount > 0;
         }
 
-        public Task<bool> Update(Product product)
+        public async Task<bool> Update(Product product)
         {
-            throw new NotImplementedException();
+            var updated = await _context.Products.ReplaceOneAsync(p => p.Id == product.Id, product);
+            return updated.IsAcknowledged && updated.ModifiedCount > 0;
         }
     }
 }
