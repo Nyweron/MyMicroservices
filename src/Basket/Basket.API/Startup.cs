@@ -1,14 +1,17 @@
+using AutoMapper;
+using Basket.API.Data;
+using Basket.API.Data.interfaces;
+using Basket.API.Entities;
+using Basket.API.Repositories;
+using Basket.API.Repositories.interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 
 namespace Basket.API
 {
@@ -24,6 +27,25 @@ namespace Basket.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<ConnectionMultiplexer>(sp =>
+            {
+                var configuration = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"), true);
+                return ConnectionMultiplexer.Connect(configuration);
+            });
+
+            services.AddTransient<IBasketContext, BasketContext>();
+            services.AddTransient<IBasketRepository, BasketRepository>();
+            services.AddAutoMapper(typeof(Startup));
+
+            var serviceProvider = services.BuildServiceProvider();
+            var logger = serviceProvider.GetService<ILogger<BasketCart>>();
+            services.AddSingleton(typeof(ILogger), logger);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "Basket API" });
+            });
+
             services.AddControllers();
         }
 
@@ -42,6 +64,12 @@ namespace Basket.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Basket API V1");
             });
         }
     }
