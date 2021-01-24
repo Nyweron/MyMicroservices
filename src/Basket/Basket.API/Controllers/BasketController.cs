@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Basket.API.Entities;
+using Basket.API.Repositories.interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Basket.API.Controllers
@@ -10,6 +15,40 @@ namespace Basket.API.Controllers
     [ApiController]
     public class BasketController : ControllerBase
     {
+        private readonly IBasketRepository _basketRepositry;
+        private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
+        public BasketController(
+            IBasketRepository basketRepositry,
+            ILogger logger,
+            IMapper mapper)
+        {
+            _basketRepositry = basketRepositry;
+            _logger = logger;
+            _mapper = mapper;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(BasketCart), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<BasketCart>> GetBasket(string userName)
+        {
+            return Ok(await _basketRepositry.GetBasket(userName));
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(typeof(BasketCart), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<BasketCart>> DeleteByUsername(string userName)
+        {
+            return Ok(await _basketRepositry.DeleteBasket(userName));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(BasketCart), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<BasketCart>> Update([FromBody] BasketCart basketCart)
+        {
+
+            return Ok(await _basketRepositry.UpdateBasket(basketCart));
+        }
     }
 }
