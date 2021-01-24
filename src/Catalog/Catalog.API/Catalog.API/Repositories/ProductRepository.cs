@@ -22,29 +22,32 @@ namespace Catalog.API.Repositories
             return await _context.Products.Find(product => true).ToListAsync();
         }
 
-        public Task<Product> GetProduct(string id)
+        public async Task<Product> GetProduct(string id)
         {
-            throw new NotImplementedException();
+            return await _context.Products.Find(product => product.Id == id).FirstOrDefaultAsync();
         }
 
-        public Task<Product> GetProductByCategory(string categoryName)
+        public async Task<IEnumerable<Product>> GetProductByCategory(string categoryName)
         {
-            throw new NotImplementedException();
+            return await _context.Products.Find(product => product.Category == categoryName).ToListAsync();
         }
 
-        public Task<Product> GetProductByName(string name)
+        public async Task<IEnumerable<Product>> GetProductByName(string name)
         {
-            throw new NotImplementedException();
+            return await _context.Products.Find(product => product.Name == name).ToListAsync();
         }
 
-        public Task Create(Product product)
+        public async Task Create(Product product)
         {
-            throw new NotImplementedException();
+            await _context.Products.InsertOneAsync(product);
         }
 
-        public Task<bool> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            throw new NotImplementedException();
+            var filterBuilder = Builders<Product>.Filter.Eq(product => product.Id, "Id");
+
+            var x = await _context.Products.DeleteOneAsync(x => x.Id == id);
+            return x.IsAcknowledged;
         }
 
         public Task<bool> Update(Product product)

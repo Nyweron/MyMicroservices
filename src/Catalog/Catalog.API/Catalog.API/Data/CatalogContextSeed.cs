@@ -6,7 +6,7 @@ namespace Catalog.API.Data
 {
     public class CatalogContextSeed
     {
-        public static void SeedAsync(IMongoCollection<Product> products)
+        public static void Seed(IMongoCollection<Product> products)
         {
             var existProducts = products.Find(x => true).Any();
             if(!existProducts)
