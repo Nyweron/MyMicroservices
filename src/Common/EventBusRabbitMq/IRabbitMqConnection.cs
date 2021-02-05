@@ -3,7 +3,7 @@ using System;
 
 namespace EventBusRabbitMq
 {
-    interface IRabbitMqConnection : IDisposable
+    public interface IRabbitMqConnection : IDisposable
     {
         bool TryConnect();
         bool IsConnected { get; }
