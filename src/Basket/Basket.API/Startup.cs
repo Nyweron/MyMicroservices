@@ -46,6 +46,13 @@ namespace Basket.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "Basket API" });
             });
 
+
+            //services.AddSingleton(sp =>
+            //{
+            //    var x = ConfigurationOptions.Parse(Configuration.GetConnectionString("rabbitmq"), true);
+
+            //})
+
             services.AddControllers();
         }
 
