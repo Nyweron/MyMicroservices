@@ -18,10 +18,6 @@ services:
   rabbitmq:
     container_name: rabbitmq
     restart: always
-    volumes:
-      - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
-      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
-      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
     ports:
       - 15672:15672 
       - 5672:5672 
