@@ -15,6 +15,12 @@ services:
     ports:
       - 6379:6379 
 
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - 15672:15672 
+
   catalog.api:
     container_name: catalogapi
     environment:
@@ -40,3 +46,4 @@ services:
       - ${HOME}/.aspnet/https:/root/.aspnet/https/
     depends_on:
       - basketdb
+      - rabbitmq

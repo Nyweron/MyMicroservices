@@ -7,6 +7,9 @@ services:
   basketdb:
     image: redis
 
+  rabbitmq:
+    image: rabbitmq
+
   catalog.api:
     image: ${DOCKER_REGISTRY-}catalogapi
     build:
