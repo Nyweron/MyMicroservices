@@ -6,6 +6,7 @@ using Basket.API.Repositories;
 using Basket.API.Repositories.interfaces;
 using Basket.API.Settings;
 using EventBusRabbitMq;
+using EventBusRabbitMq.Producer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -62,6 +63,8 @@ namespace Basket.API
 
                 return new RabbitMqConnection(factory);
             });
+
+            services.AddSingleton(typeof(EventBusRabbitMqProducer));
 
             services.AddControllers();
         }

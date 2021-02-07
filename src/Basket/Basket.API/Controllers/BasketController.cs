@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Basket.API.Entities;
 using Basket.API.Repositories.interfaces;
+using EventBusRabbitMq.Producer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,15 +19,18 @@ namespace Basket.API.Controllers
         private readonly IBasketRepository _basketRepositry;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly EventBusRabbitMqProducer _eventBusRabbitMqProducer;
 
         public BasketController(
             IBasketRepository basketRepositry,
             ILogger logger,
-            IMapper mapper)
+            IMapper mapper, 
+            EventBusRabbitMqProducer eventBusRabbitMqProducer)
         {
             _basketRepositry = basketRepositry;
             _logger = logger;
             _mapper = mapper;
+            _eventBusRabbitMqProducer = eventBusRabbitMqProducer;
         }
 
         [HttpGet]
@@ -49,6 +53,16 @@ namespace Basket.API.Controllers
         {
 
             return Ok(await _basketRepositry.UpdateBasket(basketCart));
+        }
+
+
+
+        [HttpGet("SendToQueue")]
+        public async Task<ActionResult> SendToQueue()
+        {
+            await _eventBusRabbitMqProducer.Publish();
+            return Ok();
+           // return Ok(await _basketRepositry.GetBasket(userName));
         }
     }
 }
