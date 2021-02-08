@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Basket.API.Entities;
 using Basket.API.Repositories.interfaces;
+using EventBusRabbitMq.Events;
 using EventBusRabbitMq.Producer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -60,9 +61,11 @@ namespace Basket.API.Controllers
         [HttpGet("SendToQueue")]
         public async Task<ActionResult> SendToQueue()
         {
-            await _eventBusRabbitMqProducer.Publish();
+            var basketCheckout = new BasketCheckoutEvent();
+
+            _eventBusRabbitMqProducer.Publish(basketCheckout);
+
             return Ok();
-           // return Ok(await _basketRepositry.GetBasket(userName));
         }
     }
 }

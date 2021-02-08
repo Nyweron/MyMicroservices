@@ -1,4 +1,6 @@
-﻿using RabbitMQ.Client;
+﻿using EventBusRabbitMq.Events;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +17,13 @@ namespace EventBusRabbitMq.Producer
             _rabbitMqConnection = rabbitMqConnection;
         }
 
-        public async Task Publish()
+        public void Publish(BasketCheckoutEvent basketCheckoutEvent)
         {
+            //TODO channel confirmation etc...
+
+            string json = JsonConvert.SerializeObject(basketCheckoutEvent);
+            var body = Encoding.UTF8.GetBytes(json);
+
             var channel = _rabbitMqConnection.CreateModel();
 
             channel.QueueDeclare(queue: "test",
@@ -25,16 +32,11 @@ namespace EventBusRabbitMq.Producer
                       autoDelete: false,
                       arguments: null);
 
-
-            var message = "Test";
-            var body = Encoding.UTF8.GetBytes(message);
+          
             channel.BasicPublish(exchange: "",
                                  routingKey: "test",
                                  basicProperties: null,
                                  body: body);
-            Console.WriteLine(" [x] Sent {0}", message);
-
-
         }
     }
 }
