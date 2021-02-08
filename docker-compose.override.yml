@@ -48,3 +48,10 @@ services:
     depends_on:
       - basketdb
       - rabbitmq
+
+  ordering.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
