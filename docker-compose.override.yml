@@ -15,6 +15,12 @@ services:
     ports:
       - 6379:6379 
 
+  orderdb:
+    container_name: orderdb
+    restart: always
+    ports:
+      - 1433:1433 
+
   rabbitmq:
     container_name: rabbitmq
     restart: always
@@ -50,8 +56,12 @@ services:
       - rabbitmq
 
   ordering.api:
+    container_name: orderapi
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "80"
+      - "8002:80"
+    depends_on:
+      - orderdb
+      - rabbitmq
 
