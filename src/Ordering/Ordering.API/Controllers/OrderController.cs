@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Ordering.Core.Entities;
+using Ordering.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,11 @@ namespace Ordering.API.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
+        private readonly IOrderRepository _orderRepository;
 
-
-        public OrderController()
+        public OrderController(IOrderRepository orderRepository)
         {
-
+            _orderRepository = orderRepository;
         }
 
         [HttpGet("[action]/{productName}")]

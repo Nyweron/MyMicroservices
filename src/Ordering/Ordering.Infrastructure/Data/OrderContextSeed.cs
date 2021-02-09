@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ordering.Infrastructure.Data
 {
-    class OrderContextSeed
+    public class OrderContextSeed
     {
     }
 }
