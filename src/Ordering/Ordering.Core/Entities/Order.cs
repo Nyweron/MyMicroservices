@@ -1,7 +1,10 @@
-﻿namespace Ordering.Core.Entities
+﻿using System;
+
+namespace Ordering.Core.Entities
 {
     public class Order
     {
+        public Guid Id { get; set; }
         public string UserName { get; set; }
         public decimal TotalPrice { get; set; }
 
