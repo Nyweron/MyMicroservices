@@ -20,7 +20,7 @@ namespace Ordering.API.Controllers
             _orderRepository = orderRepository;
         }
 
-        [HttpGet("[action]/{productName}")]
+        [HttpGet("[action]/{username}")]
         [ProducesResponseType(typeof(Order), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<Order>> GetOrdersByUserName(string username)
         {

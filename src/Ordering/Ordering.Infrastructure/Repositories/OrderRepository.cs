@@ -1,5 +1,7 @@
-﻿using Ordering.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Ordering.Core.Entities;
 using Ordering.Core.Repositories;
+using Ordering.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +12,17 @@ namespace Ordering.Infrastructure.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
-        public Task<IEnumerable<Order>> GetOrdersByUserName(string userName)
+        private readonly OrderContext _context;
+
+        public OrderRepository(OrderContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByUserName(string userName)
+        {
+            var results = await _context.Orders.Where(x=>x.UserName==userName).ToListAsync();
+            return results;
         }
     }
 }

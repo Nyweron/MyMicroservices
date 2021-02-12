@@ -8,7 +8,7 @@ namespace Ordering.Infrastructure.Data
         public OrderContext(DbContextOptions<OrderContext> options)
         : base(options)
         {
-
+            //OrderContextSeed.Seed(options);
         }
 
         public DbSet<Order> Orders{ get; set; }
