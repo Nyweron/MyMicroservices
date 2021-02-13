@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Ordering.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,9 @@ namespace Ordering.API
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            CreateAndSeedDatabase(host);
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -22,5 +26,24 @@ namespace Ordering.API
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        private static void CreateAndSeedDatabase(IHost host)
+        {
+            using (var scope = host.Services.CreateScope())
+            {
+                using (var appContext = scope.ServiceProvider.GetRequiredService<OrderContext>())
+                {
+                    try
+                    {
+                        OrderContextSeed.Seed(appContext);
+                    }
+                    catch (Exception ex)
+                    {
+                        //Log errors or do anything you think it's needed
+                        throw;
+                    }
+                }
+            }
+        }
     }
 }
