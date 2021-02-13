@@ -24,7 +24,7 @@ namespace Ordering.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<OrderContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("OrderConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("OrderConnection")), ServiceLifetime.Singleton);
 
             services.AddTransient<IOrderRepository, OrderRepository>();
 
