@@ -17,9 +17,11 @@ services:
 
   orderdb:
     container_name: orderdb
-    restart: always
     ports:
       - 1433:1433 
+    environment:
+      SA_PASSWORD: "Prz12345678"
+      ACCEPT_EULA: "Y"
 
   rabbitmq:
     container_name: rabbitmq
@@ -59,6 +61,7 @@ services:
     container_name: orderapi
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:OrderConnection=Server=orderdb;Database=OrderDb;User Id=sa;Password=Prz12345678"
     ports:
       - "8002:80"
     depends_on:
