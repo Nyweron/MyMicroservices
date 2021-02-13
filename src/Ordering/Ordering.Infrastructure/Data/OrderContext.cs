@@ -13,5 +13,10 @@ namespace Ordering.Infrastructure.Data
 
         public DbSet<Order> Orders{ get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Order>().Property(x => x.TotalPrice).HasPrecision(16, 3);
+        }
+
     }
 }
