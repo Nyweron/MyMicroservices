@@ -20,11 +20,10 @@ namespace Ordering.API.Controllers
             _orderRepository = orderRepository;
         }
 
-        [HttpGet("[action]/{username}")]
-        [ProducesResponseType(typeof(Order), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Order>> GetOrdersByUserName(string username)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(await _orderRepository.GetOrdersByUserName(username));
+            return Ok(await _orderRepository.GetOrdersByUserName());
         }
     }
 }
