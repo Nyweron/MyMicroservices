@@ -35,7 +35,7 @@ namespace Ordering.API
                 {
                     try
                     {
-                        OrderContextSeed.Seed(appContext);
+                        OrderContextSeed.SeedAsync(appContext).Wait();
                     }
                     catch (Exception ex)
                     {

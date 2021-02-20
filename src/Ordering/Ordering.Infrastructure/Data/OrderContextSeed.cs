@@ -1,12 +1,13 @@
 ﻿using Ordering.Core.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Ordering.Infrastructure.Data
 {
     public class OrderContextSeed
     {
-        public static void Seed(OrderContext context)
+        public static async Task SeedAsync(OrderContext context)
         {
             context.Database.EnsureCreated();
 
@@ -15,16 +16,16 @@ namespace Ordering.Infrastructure.Data
                 return;   // DB has been seeded
             }
 
-            context.AddRangeAsync(GetPreconfiguredOrders());
-            context.SaveChangesAsync();
+            context.AddRange(GetPreconfiguredOrders());
+            await context.SaveChangesAsync();
         }
 
         private static IEnumerable<Order> GetPreconfiguredOrders()
         {
             return new List<Order>()
             {
-                new Order() { UserName = "swn", FirstName = "Adam", LastName = "Malina", EmailAddress = "ada@ozk.com", AddressLine = "Dworcowa", TotalPrice = 5239 },
-                new Order() { UserName = "swn", FirstName = "Ola", LastName = "Banan", EmailAddress ="ban@ars.com", AddressLine = "Fabryczna", TotalPrice = 3486 }
+                new Order() {Id=1, UserName = "swn", FirstName = "Adam", LastName = "Malina", EmailAddress = "ada@ozk.com", AddressLine = "Dworcowa", TotalPrice = 5239 },
+                new Order() {Id=2, UserName = "swn", FirstName = "Ola", LastName = "Banan", EmailAddress ="ban@ars.com", AddressLine = "Fabryczna", TotalPrice = 3486 }
             };
         }
     }
