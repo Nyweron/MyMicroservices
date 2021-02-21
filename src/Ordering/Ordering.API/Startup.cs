@@ -1,3 +1,4 @@
+using EventBusRabbitMq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -5,9 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Ordering.API.RabbitMq;
+using Ordering.API.Settings;
 using Ordering.Core.Repositories;
 using Ordering.Infrastructure.Data;
 using Ordering.Infrastructure.Repositories;
+using RabbitMQ.Client;
 
 namespace Ordering.API
 {
@@ -35,6 +39,22 @@ namespace Ordering.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "Order API" });
             });
+
+            services.AddSingleton<IRabbitMqConnection>(sp =>
+            {
+                var rabbitMqSettings = Configuration.GetSection("EventBus").Get<RabbitmqSettings>();
+
+                var factory = new ConnectionFactory
+                {
+                    UserName = rabbitMqSettings.Username,
+                    HostName = rabbitMqSettings.Hostname,
+                    Password = rabbitMqSettings.Password
+                };
+
+                return new RabbitMqConnection(factory);
+            });
+
+            services.AddSingleton(typeof(EventBusRabbitMqConsumer));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
