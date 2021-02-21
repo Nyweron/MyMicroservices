@@ -6,6 +6,6 @@ namespace Ordering.Core.Repositories
 {
     public interface IOrderRepository
     {
-        Task<IEnumerable<Order>> GetOrdersByUserName();
+        Task<IEnumerable<Order>> GetOrdersByUserName(string userName);
     }
 }
