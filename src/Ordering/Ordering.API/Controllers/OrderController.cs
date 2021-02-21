@@ -26,7 +26,9 @@ namespace Ordering.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetOrdersByUserName(string userName)
         {
-            return Ok(await _orderRepository.GetOrdersByUserName(userName));
+            var userOrders = await _orderRepository.GetOrdersByUserName(userName);
+
+            return Ok(userOrders);
         }
 
         [HttpGet("ReceiveFromQueue")]
