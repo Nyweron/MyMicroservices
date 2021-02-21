@@ -48,6 +48,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:Redis=basketdb:6379"
+      - "EventBus:HostName=rabbitmq"
     ports:
       - "8001:80"
     volumes:
@@ -58,10 +59,12 @@ services:
       - rabbitmq
 
   ordering.api:
-    container_name: orderapi
+    container_name: orderingapi
+    restart: on-failure
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:OrderConnection=Server=orderdb;Database=OrderDb;User Id=sa;Password=Prz12345678"
+      - "EventBus:HostName=rabbitmq"
     ports:
       - "8002:80"
     depends_on:
