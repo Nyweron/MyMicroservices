@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Ordering.API.RabbitMq;
-using Ordering.Core.Entities;
-using Ordering.Core.Repositories;
-using System;
+using Ordering.Application.Queries;
+using Ordering.Application.Responses;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Ordering.API.Controllers
@@ -14,19 +12,28 @@ namespace Ordering.API.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly IOrderRepository _orderRepository;
         private readonly EventBusRabbitMqConsumer _eventBusRabbitMqConsumer;
+        private readonly IMediator _mediator;
 
-        public OrderController(IOrderRepository orderRepository, EventBusRabbitMqConsumer eventBusRabbitMqConsumer)
+        public OrderController(EventBusRabbitMqConsumer eventBusRabbitMqConsumer,
+                               IMediator mediator)
         {
-            _orderRepository = orderRepository;
             _eventBusRabbitMqConsumer = eventBusRabbitMqConsumer;
+            _mediator = mediator;
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    return Ok(await _orderRepository.GetOrdersByUserName());
+        //}
+
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrdersByUserName(string userName)
         {
-            return Ok(await _orderRepository.GetOrdersByUserName());
+            var query = new GetOrderByUserNameQuery(userName);
+            var orders = await _mediator.Send(query);
+            return Ok(orders);
         }
 
         [HttpGet("ReceiveFromQueue")]
