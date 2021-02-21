@@ -24,7 +24,7 @@ namespace Ordering.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string userName)
+        public async Task<IActionResult> GetOrdersByUserName(string userName)
         {
             return Ok(await _orderRepository.GetOrdersByUserName(userName));
         }
