@@ -1,17 +1,15 @@
 ﻿using AutoMapper;
+using MediatR;
 using Ordering.Application.Queries;
 using Ordering.Application.Responses;
-using Ordering.Core.Entities;
 using Ordering.Core.Repositories;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ordering.Application.Handlers.QueryHandlers
 {
-    public class GetOrderByUserNameHandler
+    public class GetOrderByUserNameHandler : IRequestHandler<GetOrderByUserNameQuery, IEnumerable<OrderResponse>>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
@@ -22,7 +20,7 @@ namespace Ordering.Application.Handlers.QueryHandlers
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<OrderResponse>> Handle(GetOrderByUserNameQuery query)
+        public async Task<IEnumerable<OrderResponse>> Handle(GetOrderByUserNameQuery query, CancellationToken cancellationTokenn)
         {
             var orderList = await _orderRepository.GetOrdersByUserName(query.UserName);
 

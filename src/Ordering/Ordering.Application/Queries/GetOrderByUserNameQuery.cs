@@ -1,6 +1,11 @@
-﻿namespace Ordering.Application.Queries
+﻿using MediatR;
+using Ordering.Application.Responses;
+using Ordering.Core.Entities;
+using System.Collections.Generic;
+
+namespace Ordering.Application.Queries
 {
-    public class GetOrderByUserNameQuery
+    public class GetOrderByUserNameQuery : IRequest<IEnumerable<OrderResponse>>
     {
         public string UserName { get; set; }
 

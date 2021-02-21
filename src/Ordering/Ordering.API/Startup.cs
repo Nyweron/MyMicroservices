@@ -1,5 +1,5 @@
-using AutoMapper;
 using EventBusRabbitMq;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Ordering.API.RabbitMq;
 using Ordering.API.Settings;
-using Ordering.Application.Responses;
-using Ordering.Core.Entities;
+using Ordering.Application.Handlers.QueryHandlers;
+using Ordering.Application.Mapper;
 using Ordering.Core.Repositories;
 using Ordering.Infrastructure.Data;
 using Ordering.Infrastructure.Repositories;
@@ -59,10 +59,9 @@ namespace Ordering.API
 
             services.AddSingleton(typeof(EventBusRabbitMqConsumer));
 
-            services.AddAutoMapper(typeof(Order), typeof(OrderResponse));
+            services.AddAutoMapper(typeof(OrderMapper));
 
-
-
+            services.AddMediatR(typeof(GetOrderByUserNameHandler));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,4 +88,6 @@ namespace Ordering.API
             });
         }
     }
+
 }
+
