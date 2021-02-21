@@ -25,7 +25,7 @@ namespace Basket.API.Controllers
         public BasketController(
             IBasketRepository basketRepositry,
             ILogger logger,
-            IMapper mapper, 
+            IMapper mapper,
             EventBusRabbitMqProducer eventBusRabbitMqProducer)
         {
             _basketRepositry = basketRepositry;
@@ -64,6 +64,16 @@ namespace Basket.API.Controllers
             var basketCheckout = new BasketCheckoutEvent();
 
             _eventBusRabbitMqProducer.Publish(basketCheckout);
+
+            return Ok();
+        }
+
+        public async Task<ActionResult> Checkout([FromBody] BasketCheckout basketCheckout)
+        {
+            // get total price of the basket
+            // remove the basket 
+            // send checkout event to rabbitMq 
+
 
             return Ok();
         }
