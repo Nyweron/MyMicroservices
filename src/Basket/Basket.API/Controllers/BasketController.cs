@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Basket.API.Entities;
 using Basket.API.Repositories.interfaces;
+using EventBusRabbitMq.Common;
 using EventBusRabbitMq.Events;
 using EventBusRabbitMq.Producer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -56,26 +55,55 @@ namespace Basket.API.Controllers
             return Ok(await _basketRepositry.UpdateBasket(basketCart));
         }
 
-
-
         [HttpGet("SendToQueue")]
         public async Task<ActionResult> SendToQueue()
         {
             var basketCheckout = new BasketCheckoutEvent();
 
-            _eventBusRabbitMqProducer.Publish(basketCheckout);
+            _eventBusRabbitMqProducer.Publish("test2", basketCheckout);
 
             return Ok();
         }
 
+        [Route("[action]")]
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.Accepted)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> Checkout([FromBody] BasketCheckout basketCheckout)
         {
             // get total price of the basket
             // remove the basket 
             // send checkout event to rabbitMq 
 
+            var userBasket = await _basketRepositry.GetBasket(basketCheckout.UserName);
+            if(userBasket == null)
+            {
+                _logger.LogError("Basket not exist with this user : {EventId}", basketCheckout.UserName);
+                return BadRequest();
+            }
 
-            return Ok();
+            var isRemoved = await _basketRepositry.DeleteBasket(basketCheckout.UserName);
+            if (!isRemoved)
+            {
+                _logger.LogError("Basket can not deleted");
+                return BadRequest();
+            }
+
+            var eventMessage = _mapper.Map<BasketCheckoutEvent>(basketCheckout);
+            eventMessage.RequestId = Guid.NewGuid();
+            eventMessage.TotalPrice = userBasket.TotalPrice;
+
+            try
+            {
+                _eventBusRabbitMqProducer.Publish(EventBusConstants.BasketCheckoutQueue ,eventMessage);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ERROR Publishing integration event: {EventId} from {AppName}", eventMessage.RequestId, "Basket");
+                throw;
+            }
+
+            return Accepted();
         }
     }
 }

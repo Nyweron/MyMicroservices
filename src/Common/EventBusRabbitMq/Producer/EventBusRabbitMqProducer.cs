@@ -17,7 +17,7 @@ namespace EventBusRabbitMq.Producer
             _rabbitMqConnection = rabbitMqConnection;
         }
 
-        public void Publish(BasketCheckoutEvent basketCheckoutEvent)
+        public void Publish(string queueName, BasketCheckoutEvent basketCheckoutEvent)
         {
             //TODO channel confirmation etc...
 
@@ -26,7 +26,7 @@ namespace EventBusRabbitMq.Producer
 
             var channel = _rabbitMqConnection.CreateModel();
 
-            channel.QueueDeclare(queue: "test",
+            channel.QueueDeclare(queue: queueName,
                       durable: false,
                       exclusive: false,
                       autoDelete: false,
@@ -34,7 +34,7 @@ namespace EventBusRabbitMq.Producer
 
           
             channel.BasicPublish(exchange: "",
-                                 routingKey: "test",
+                                 routingKey: queueName,
                                  basicProperties: null,
                                  body: body);
         }

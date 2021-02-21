@@ -2,6 +2,7 @@ using AutoMapper;
 using Basket.API.Data;
 using Basket.API.Data.interfaces;
 using Basket.API.Entities;
+using Basket.API.Mapper;
 using Basket.API.Repositories;
 using Basket.API.Repositories.interfaces;
 using Basket.API.Settings;
@@ -39,7 +40,7 @@ namespace Basket.API
 
             services.AddTransient<IBasketContext, BasketContext>();
             services.AddTransient<IBasketRepository, BasketRepository>();
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(BasketMapper));
 
             var serviceProvider = services.BuildServiceProvider();
             var logger = serviceProvider.GetService<ILogger<BasketCart>>();
